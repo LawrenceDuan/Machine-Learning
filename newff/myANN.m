@@ -37,4 +37,27 @@ function [] = myANN(k)
         % Replace the original output vector, making the highest value 1 and others 0
 		BPoutput{i} = bsxfun(@eq, BPoutput{i}, max(BPoutput{i}, [], 1));
     end
+    
+    %% Confusion matrix
+    % 		    | 1	  2	  3	  4	  5	  6 (Predicted)
+	% ===================================
+	% (Actual)  |
+	% 	1		|					
+	% 	2		|
+	% 	3		|
+	% 	4		|
+	% 	5		|
+	% 	6		|
+	confusion_matrix = zeros(6, 6);
+
+	% Iterate k times, in order to get the x and y of confusion matrix
+	for i = 1 : k
+		targets = y(:, folds{i});
+		for j = 1 : size(BPoutput{i}, 2)
+			predicted = find(BPoutput{i}(:, j) == 1);
+			actual = find(targets(:, j) == 1);
+			confusion_matrix(actual, predicted) = confusion_matrix(actual, predicted) + 1;
+		end
+	end
+	confusion_matrix
 end
